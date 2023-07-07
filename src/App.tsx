@@ -1,66 +1,27 @@
-import { createContext, useEffect, useState } from 'react'
-
 import { BrowserRouter } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
+import { CartProvider } from './contexts/CartContext'
+import { SnackProvider } from './contexts/SnackContext'
 import { AppRoutes } from './routes'
 
 import { Theme } from './styles/Theme'
 import { GlobalStyle } from './styles/global'
 import { Normalize } from 'styled-normalize'
 
-import { SnackData } from './interfaces/SnackData'
-import { getBurgers, getPizzas, getDrinks, getIceCreams } from './services/api'
-
-interface SnackContextProps {
-  burgers: SnackData[]
-  pizzas: SnackData[]
-  drinks: SnackData[]
-  iceCreams: SnackData[]
-}
-
-export const SnackContext = createContext({} as SnackContextProps)
-
 export default function App() {
-  const [burgers, setBurgers] = useState<SnackData[]>([])
-  const [pizzas, setPizzas] = useState<SnackData[]>([])
-  const [drinks, setDrinks] = useState<SnackData[]>([])
-  const [iceCreams, setIceCreams] = useState<SnackData[]>([])
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const burgerRequest = await getBurgers()
-        const pizzasRequest = await getPizzas()
-        const drinksRequest = await getDrinks()
-        const iceCreamsRequest = await getIceCreams()
-
-        const requests = [burgerRequest, pizzasRequest, drinksRequest, iceCreamsRequest]
-
-        const [
-          { data: burgerResponse },
-          { data: pizzasResponse },
-          { data: drinksResponse },
-          { data: iceCreamsResponse },
-        ] = await Promise.all(requests)
-
-        setBurgers(burgerResponse)
-        setPizzas(pizzasResponse)
-        setDrinks(drinksResponse)
-        setIceCreams(iceCreamsResponse)
-      } catch (error) {
-        console.error(error)
-      }
-    })()
-  }, [])
-
   return (
     <BrowserRouter>
       <Theme>
-        <SnackContext.Provider value={{ burgers, pizzas, drinks, iceCreams }}>
-          <AppRoutes />
-          <GlobalStyle />
-          <Normalize />
-        </SnackContext.Provider>
+        <SnackProvider>
+          <CartProvider>
+            <AppRoutes />
+            <ToastContainer autoClose={2000} />
+            <GlobalStyle />
+            <Normalize />
+          </CartProvider>
+        </SnackProvider>
       </Theme>
     </BrowserRouter>
   )
