@@ -1,12 +1,8 @@
-import { useEffect, useState, useContext } from 'react'
+import { useContext } from 'react'
 
 import { Head } from '../../../components/Head'
 import { Snacks } from '../../../components/Snacks'
 import { SnackTitle } from '../../../components/SnackTitle'
-
-import { SnackData } from '../../../interfaces/SnackData'
-
-import { getBurgers } from '../../../services/api'
 
 import { SnackContext } from '../../../App'
 
